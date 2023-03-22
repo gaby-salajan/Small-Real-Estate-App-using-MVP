@@ -1,4 +1,4 @@
-package com.gabys.ps_tema1.View;
+package com.gabys.ps_tema1.View.Interface;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,10 +11,9 @@ import java.util.ArrayList;
  * Defineste metode pentru a prelucra informatiile din interfata grafica
  * */
 public interface IViewClient{
-
+    void setUserRole(int userRole);
     void bindAdapterToRecycler();
     void setProperties(ArrayList<Property> propertiesList);
-    void setUser(User user);
 
 
 

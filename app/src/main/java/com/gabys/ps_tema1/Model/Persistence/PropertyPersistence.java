@@ -16,6 +16,34 @@ public class PropertyPersistence {
     public PropertyPersistence(Context context) {
         this.database = DBConnection.getInstance(context).getConnection();
     }
+    public ArrayList<Property> getAvailableProperties() {
+        ArrayList<Property> properties = new ArrayList<>();
+
+        Cursor cursor = database.query("Properties", null, "isAvailable = 1", null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String location = cursor.getString(cursor.getColumnIndexOrThrow("location"));
+                int rooms = cursor.getInt(cursor.getColumnIndexOrThrow("roomsNo"));
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                float price = cursor.getFloat(cursor.getColumnIndexOrThrow("price"));
+                int isAvailable = cursor.getInt(cursor.getColumnIndexOrThrow("isAvailable"));
+                String imageURL = cursor.getString(cursor.getColumnIndexOrThrow("imageURL"));
+
+                properties.add(new Property(id, title, location, rooms, type, price, isAvailable == 1, imageURL));
+
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return properties;
+    }
 
     public ArrayList<Property> getProperties() {
         ArrayList<Property> properties = new ArrayList<>();
@@ -45,7 +73,37 @@ public class PropertyPersistence {
         return properties;
     }
 
-    public void addProperty(Property property) {
+    public Property getProperty(int id) {
+        Property property = null;
+        Cursor cursor = database.query("Properties", null, "id = " + id, null, null, null, null);
+
+        if (cursor != null){
+            property = new Property();
+            cursor.moveToFirst();
+        }
+
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String location = cursor.getString(cursor.getColumnIndexOrThrow("location"));
+                int rooms = cursor.getInt(cursor.getColumnIndexOrThrow("roomsNo"));
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                float price = cursor.getFloat(cursor.getColumnIndexOrThrow("price"));
+                int isAvailable = cursor.getInt(cursor.getColumnIndexOrThrow("isAvailable"));
+                String imageURL = cursor.getString(cursor.getColumnIndexOrThrow("imageURL"));
+
+                property = new Property(id, title, location, rooms, type, price, isAvailable == 1, imageURL);
+
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return property;
+    }
+
+    public long addProperty(Property property) {
         ContentValues values = new ContentValues();
 
         values.put("title", property.getTitle());
@@ -56,7 +114,7 @@ public class PropertyPersistence {
         values.put("isAvailable", property.isAvailable() ? 1 : 0);
         values.put("imageURL", property.getImageURL());
 
-        database.insert("Properties", null, values);
+        return database.insert("Properties", null, values);
     }
 
     public void updateProperty(Property property) {
@@ -74,9 +132,9 @@ public class PropertyPersistence {
         database.update("Properties", values, "id = ?", whereArgs);
     }
 
-    public void deleteProperty(Property property) {
-        String[] whereArgs = {String.valueOf(property.getId())};
-        database.delete("Properties", "id = ?", whereArgs);
+    public int deleteProperty(int id) {
+        String[] whereArgs = {String.valueOf(id)};
+        return database.delete("Properties", "id = ?", whereArgs);
     }
 
     public void createPropertyTable() {
@@ -91,6 +149,10 @@ public class PropertyPersistence {
                 "imageURL TEXT);"
                 ;
         database.execSQL(query);
+    }
+
+    public void deleteTable(){
+        database.execSQL("DROP TABLE IF EXISTS Properties");
     }
 
     public void insertDummyValues(){

@@ -9,6 +9,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.*;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -30,38 +31,37 @@ public class TestDatabaseCreation {
     public void setUp() throws Exception
     {
         activity = Robolectric.buildActivity(TestActivity.class).setup().get();
-
         databaseHelper = new DatabaseHelper(activity);
-        db = databaseHelper.getWritableDatabase();
     }
 
     @Test
-    public void TestDBCreation()
-    {
+    public void TestDBCreation() {
 
-        // Arrange
-        //SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/data/data/com.gabys.ps_tema1.test/databases/agency.db", null);
+        // db
+        assertFalse(doesDatabaseExist(activity, "agency.db"));
+        db = databaseHelper.getWritableDatabase();
+        assertTrue(doesDatabaseExist(activity, "agency.db"));
 
-        // Assert
+        // tables
         assertFalse(doesTableExist(db, "Properties"));
         assertFalse(doesTableExist(db, "Users"));
 
-        // Act
         UserPersistence userPersistence = new UserPersistence(activity);
         PropertyPersistence propertyPersistence = new PropertyPersistence(activity);
 
         userPersistence.createUserTable();
         propertyPersistence.createPropertyTable();
 
-        // Assert
         assertTrue(doesTableExist(db, "Properties"));
         assertTrue(doesTableExist(db, "Users"));
-
-        //SQLiteDatabase.deleteDatabase(new File("/data/data/com.gabys.ps_tema1.test/databases/agency.db"));
 
         db.close();
     }
 
+    private static boolean doesDatabaseExist(Context context, String dbName) {
+        File dbFile = context.getDatabasePath(dbName);
+        return dbFile.exists();
+    }
     public boolean doesTableExist(SQLiteDatabase db, String tableName) {
         Cursor cursor = db.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
         if (cursor != null) {

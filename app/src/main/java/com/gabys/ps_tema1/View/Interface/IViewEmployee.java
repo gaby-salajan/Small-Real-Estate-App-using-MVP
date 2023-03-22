@@ -1,8 +1,4 @@
-package com.gabys.ps_tema1.View;
-
-import com.gabys.ps_tema1.Model.User;
-
-import java.util.ArrayList;
+package com.gabys.ps_tema1.View.Interface;
 
 public interface IViewEmployee extends IViewClient {
     void addProperty();

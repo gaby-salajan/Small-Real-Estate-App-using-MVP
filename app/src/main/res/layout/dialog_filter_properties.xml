@@ -98,9 +98,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:tag="Tipuri">
-
-        </androidx.appcompat.widget.AppCompatSpinner>
+            android:tag="Tipuri"/>
 
     </LinearLayout>
 

@@ -11,32 +11,35 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gabys.ps_tema1.Model.Property;
 import com.gabys.ps_tema1.Model.User;
 import com.gabys.ps_tema1.Presenter.PresenterClient;
 import com.gabys.ps_tema1.R;
+import com.gabys.ps_tema1.View.Adapters.PropertyCardAdapter;
+import com.gabys.ps_tema1.View.Interface.IViewClient;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 
 public class ClientActivity extends AppCompatActivity implements IViewClient {
-    private Button filterButton;
 
-    private Button loginButton;
-    private ConstraintLayout layout;
-    private PresenterClient presenter;
-    PropertyCardAdapter propertyCardAdapter;
+    Button filterButton;
+    ExtendedFloatingActionButton loginButton;
+    ConstraintLayout layout;
     RecyclerView propertiesRV;
+    PresenterClient presenter;
+    PropertyCardAdapter propertyCardAdapter;
 
     private void initComponents(){
         setContentView(R.layout.activity_main);
         layout = findViewById(R.id.layout1);
         propertiesRV = findViewById(R.id.property_RecyclerView);
         loginButton = findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(v -> onLoginButtonClick());
         filterButton = findViewById(R.id.filterButton);
+
+        loginButton.setOnClickListener(v -> onLoginButtonClick());
         filterButton.setOnClickListener(v -> onFilterButtonClick());
         propertyCardAdapter = new PropertyCardAdapter(this);
     }
@@ -48,28 +51,30 @@ public class ClientActivity extends AppCompatActivity implements IViewClient {
 
         presenter = new PresenterClient( this, this);
         presenter.setupRecyclerView(this, propertiesRV);
+        presenter.fetchProperties();
     }
 
     private void onLoginButtonClick(){
         presenter.onLoginButtonClick(layout.getContext(), getLayoutInflater());
     }
 
-    private void onFilterButtonClick() {
+    void onFilterButtonClick() {
         presenter.onFilterButtonClick(layout.getContext(), getLayoutInflater());
+    }
+
+    @Override
+    public void setUserRole(int userRole) {
+        this.propertyCardAdapter.setUserRole(userRole);
+    }
+
+    @Override
+    public void bindAdapterToRecycler() {
+        this.propertiesRV.setAdapter(propertyCardAdapter);
     }
 
     @Override
     public void setProperties(ArrayList<Property> propertiesList) {
         this.propertyCardAdapter.setItems(propertiesList);
-    }
-
-    @Override
-    public void setUser(User user) {
-
-    }
-    @Override
-    public void bindAdapterToRecycler() {
-        this.propertiesRV.setAdapter(propertyCardAdapter);
     }
 
     @Override

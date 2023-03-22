@@ -1,8 +1,5 @@
 package com.gabys.ps_tema1.Presenter;
 
-import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +9,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,8 +23,8 @@ import com.gabys.ps_tema1.Model.Property;
 import com.gabys.ps_tema1.R;
 import com.gabys.ps_tema1.View.AdminActivity;
 import com.gabys.ps_tema1.View.EmployeeActivity;
-import com.gabys.ps_tema1.View.IViewClient;
-import com.gabys.ps_tema1.View.PropertyCardAdapter;
+import com.gabys.ps_tema1.View.Interface.IViewClient;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,12 +35,11 @@ import java.util.stream.Collectors;
 * PresenterClient-ul efectueaza operatiile
 * */
 public class PresenterClient{
-    private final IViewClient iViewClient;
-    private UserPersistence userPersistence;
-    private PropertyPersistence propertyPersistence;
-
+    private IViewClient iViewClient;
+    UserPersistence userPersistence;
+    PropertyPersistence propertyPersistence;
     private User user;
-    private ArrayList<Property> propertiesList;
+    ArrayList<Property> propertiesList;
 
     public PresenterClient(IViewClient iViewClient, Context context) {
         this.iViewClient = iViewClient;
@@ -54,14 +49,19 @@ public class PresenterClient{
 
         /*propertyPersistence.createPropertyTable();
         propertyPersistence.insertDummyValues();
+
         userPersistence.createUserTable();
         userPersistence.insertDummyValues();*/
 
-        fetchProperties();
+        //fetchProperties();
+        this.iViewClient.setUserRole(0);
         this.iViewClient.bindAdapterToRecycler();
-        this.iViewClient.setProperties(propertiesList);
+    }
 
-
+    public PresenterClient(Context context) {
+        this.propertiesList = new ArrayList<>();
+        this.userPersistence = new UserPersistence(context);
+        this.propertyPersistence = new PropertyPersistence(context);
     }
 
     public void setupRecyclerView(Context context, RecyclerView recyclerView){
@@ -176,30 +176,14 @@ public class PresenterClient{
         propertiesList = (ArrayList<Property>) propertiesList.stream()
                 .sorted(Comparator.comparing(Property::getLocation)
                         .thenComparing(Property::getPrice))
-                .filter(Property::isAvailable)
                 .collect(Collectors.toList());
 
     }
 
     public void fetchProperties(){
-        propertiesList = propertyPersistence.getProperties();
+        propertiesList = propertyPersistence.getAvailableProperties();
         sortProperties();
-    }
-
-    public UserPersistence getUserPersistence() {
-        return userPersistence;
-    }
-
-    public void setUserPersistence(UserPersistence userPersistence) {
-        this.userPersistence = userPersistence;
-    }
-
-    public PropertyPersistence getPropertyPersistence() {
-        return propertyPersistence;
-    }
-
-    public void setPropertyPersistence(PropertyPersistence propertyPersistence) {
-        this.propertyPersistence = propertyPersistence;
+        this.iViewClient.setProperties(propertiesList);
     }
 
     public User getUser() {
@@ -210,25 +194,13 @@ public class PresenterClient{
         this.user = user;
     }
 
-    public ArrayList<Property> getPropertiesList() {
-        return propertiesList;
-    }
-
-    public void setPropertiesList(ArrayList<Property> propertiesList) {
-        this.propertiesList = propertiesList;
-    }
-
-    public IViewClient getInterface() {
-        return iViewClient;
-    }
-
     public void onLoginButtonClick(Context context, LayoutInflater inflater) {
         View dialogView = inflater.inflate(R.layout.dialog_login, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
         AlertDialog loginDialog = builder.create();
 
-        loginDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_bg);
+        loginDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_login_bg);
 
         // Set up views in filter dialog
         EditText usernameEditText = dialogView.findViewById(R.id.usernameField);
@@ -246,8 +218,6 @@ public class PresenterClient{
         yesButton.setOnClickListener(v -> {
             String username = String.valueOf(usernameEditText.getText());
             String password = String.valueOf(passwordEditText.getText());
-
-
 
             performLogin(context, username, password);
 
@@ -268,10 +238,18 @@ public class PresenterClient{
                 Intent intent = null;
                 if(user.getRole() == 1){
                     intent = new Intent(context, EmployeeActivity.class);
+
+                    Gson gson = new Gson();
+                    String myJson = gson.toJson(user);
+                    intent.putExtra("user", myJson);
                 }
                 if(user.getRole() == 2){
                     intent = new Intent(context, AdminActivity.class);
+                    Gson gson = new Gson();
+                    String myJson = gson.toJson(user);
+                    intent.putExtra("user", myJson);
                 }
+
                 if(intent != null){
                     context.startActivity(intent);
                     ((Activity) context).finish();
@@ -282,8 +260,6 @@ public class PresenterClient{
 
             }
         }
-
-
 
     }
 }

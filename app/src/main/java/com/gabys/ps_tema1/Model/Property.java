@@ -1,5 +1,7 @@
 package com.gabys.ps_tema1.Model;
 
+import java.util.Objects;
+
 public class Property {
 
     private int id;
@@ -32,6 +34,15 @@ public class Property {
         this.price = price;
         this.isAvailable = b;
         this.imageURL = imageURL;
+    }
+
+    public Property(String title, String location, int rooms, String type, float price, boolean isAvailable) {
+        this.title = title;
+        this.location = location;
+        this.roomsNo = rooms;
+        this.type = type;
+        this.price = price;
+        this.isAvailable = isAvailable;
     }
 
     public String getTitle() {
@@ -85,6 +96,9 @@ public class Property {
     public int getId() {
         return id;
     }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public boolean isAvailable() {
         return isAvailable;
@@ -92,5 +106,13 @@ public class Property {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Property property = (Property) o;
+        return roomsNo == property.roomsNo && isAvailable == property.isAvailable && title.equals(property.title) && location.equals(property.location) && type.equals(property.type) && price.equals(property.price) && Objects.equals(imageURL, property.imageURL);
     }
 }

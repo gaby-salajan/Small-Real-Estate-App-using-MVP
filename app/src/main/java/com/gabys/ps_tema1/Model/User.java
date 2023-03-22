@@ -1,5 +1,7 @@
 package com.gabys.ps_tema1.Model;
 
+import java.util.Objects;
+
 public class User {
     private int id;
     private String username;
@@ -52,5 +54,13 @@ public class User {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return role == user.role && username.equals(user.username) && password.equals(user.password);
     }
 }

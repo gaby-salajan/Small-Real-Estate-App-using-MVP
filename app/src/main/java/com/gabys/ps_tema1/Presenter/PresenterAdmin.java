@@ -10,38 +10,42 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import androidx.appcompat.app.AlertDialog;
-
+import androidx.fragment.app.FragmentActivity;
 import com.gabys.ps_tema1.Model.Property;
 import com.gabys.ps_tema1.Model.User;
 import com.gabys.ps_tema1.R;
-import com.gabys.ps_tema1.View.AddPropertyActivity;
+import com.gabys.ps_tema1.View.Adapters.ViewPagerAdapter;
+import com.gabys.ps_tema1.View.AddUserActivity;
 import com.gabys.ps_tema1.View.ClientActivity;
-import com.gabys.ps_tema1.View.Interface.IViewEmployee;
+import com.gabys.ps_tema1.View.Interface.IViewAdmin;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class PresenterEmployee extends PresenterClient{
+public class PresenterAdmin extends PresenterClient {
 
-    private IViewEmployee iViewEmployee;
+    IViewAdmin iViewAdmin;
+    ArrayList<User> userList;
     User user;
+    Context context;
 
-    public PresenterEmployee(IViewEmployee iViewEmployee, Context context) {
+    public PresenterAdmin(IViewAdmin iViewAdmin, Context context) {
         super(context);
-        this.iViewEmployee = iViewEmployee;
-        this.iViewEmployee.bindAdapterToRecycler();
+        this.iViewAdmin = iViewAdmin;
+        this.context = context;
 
         Gson gson = new Gson();
         user = gson.fromJson(((Activity)context).getIntent().getStringExtra("user"), User.class);
-        this.iViewEmployee.setUserRole(user.getRole());
-    }
 
-    public PresenterEmployee(Context context){
-        super(context);
+        this.iViewAdmin.setAdapters(new ViewPagerAdapter(
+                ((FragmentActivity)context).getSupportFragmentManager(),
+                this.iViewAdmin.getPropertyCardAdapter(),
+                this.iViewAdmin.getUserCardAdapter()));
+
+        this.iViewAdmin.setUserRole(user.getRole());
     }
 
     public void onFilterButtonClick(Context context, LayoutInflater inflater){
@@ -144,7 +148,7 @@ public class PresenterEmployee extends PresenterClient{
                 .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        this.iViewEmployee.setProperties(filteredProperties);
+        this.iViewAdmin.setProperties(filteredProperties);
     }
 
     public void onLogoutButtonClick(Context context) {
@@ -152,21 +156,26 @@ public class PresenterEmployee extends PresenterClient{
         context.startActivity(intent);
         ((Activity) context).finish();
     }
-    @Override
+
+    public void fetchUsers() {
+        userList = userPersistence.getAuthUsers();
+        this.iViewAdmin.setUsers(userList);
+    }
     public void fetchProperties(){
         propertiesList = propertyPersistence.getProperties();
         sortProperties();
-        this.iViewEmployee.setProperties(propertiesList);
+        this.iViewAdmin.setProperties(propertiesList);
     }
 
-    public void deleteProperty(int id){
-        propertyPersistence.deleteProperty(id);
-        fetchProperties();
-    }
-
-
-    public void onAddPropertyButtonClick(Context context) {
-        Intent intent = new Intent(context, AddPropertyActivity.class);
+    public void onAddUserButtonClick(Context context) {
+        Intent intent = new Intent(context, AddUserActivity.class);
         context.startActivity(intent);
     }
+
+    public void deleteUser(int id) {
+        userPersistence.deleteUser(id);
+        fetchUsers();
+    }
+
+
 }

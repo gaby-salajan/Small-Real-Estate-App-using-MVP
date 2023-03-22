@@ -26,11 +26,25 @@
         </activity>
 
         <activity
-        android:name=".View.EmployeeActivity"
-        android:exported="true"/>
+            android:name=".View.EmployeeActivity"
+            android:exported="true"/>
 
         <activity
             android:name=".View.AdminActivity"
+            android:exported="true"/>
+
+        <activity
+            android:name=".View.EditPropertyActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".View.AddPropertyActivity"
+            android:exported="true"/>
+
+        <activity
+            android:name=".View.EditUserActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".View.AddUserActivity"
             android:exported="true"/>
 
 

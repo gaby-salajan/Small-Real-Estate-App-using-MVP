@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="194dp"
             android:contentDescription="Imagine proprietate"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/baseline_person_24" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,60 +34,39 @@
 
             <!-- Title, secondary and supporting text -->
             <TextView
-                android:id="@+id/card_title"
+                android:id="@+id/card_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titlu pt proprietat"
+                android:text="ID"
                 android:textSize="18sp"
                 android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
-                android:id="@+id/card_location"
+                android:id="@+id/card_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Locatie"
+                android:text="nume utilizator"
                 android:textSize="16sp"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?android:attr/textColorSecondary" />
 
             <TextView
-                android:id="@+id/card_roomsNo"
+                android:id="@+id/card_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Nr camere"
+                android:text="parola"
                 android:textSize="14sp"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?android:attr/textColorSecondary" />
 
             <TextView
-                android:id="@+id/card_type"
+                android:id="@+id/card_role"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Tip"
-                android:textSize="14sp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?android:attr/textColorSecondary" />
-
-
-            <TextView
-                android:id="@+id/card_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Pret"
-                android:textSize="14sp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?android:attr/textColorSecondary" />
-
-            <TextView
-                android:id="@+id/card_isAvailable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Disponibil"
+                android:text="rol"
                 android:textSize="14sp"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?android:attr/textColorSecondary" />

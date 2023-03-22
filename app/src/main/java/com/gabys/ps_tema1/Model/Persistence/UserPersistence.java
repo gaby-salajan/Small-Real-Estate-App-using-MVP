@@ -21,7 +21,7 @@ public class UserPersistence {
         ArrayList<User> userList = new ArrayList<>();
         //ia doar autentificati
         String whereArgs = "role != 0";
-        Cursor cursor = database.query("Properties", null, whereArgs, null, null, null, null);
+        Cursor cursor = database.query("Users", null, whereArgs, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -45,8 +45,8 @@ public class UserPersistence {
 
     public User getLoginUser(String username){
         User result = null;
-        //ia doar autentificati
-        String whereArgs = "role != 0";
+        //ia doar cel ce se autentifica
+        String whereArgs = "username = " +"'"+username+"'";
         Cursor cursor = database.query("Users", null, whereArgs, null, null, null, null);
 
         if (cursor != null)
@@ -68,17 +68,42 @@ public class UserPersistence {
         return result;
     }
 
-    public void addUser(User user) {
+    public User getUser(int id) {
+        User user = null;
+        Cursor cursor = database.query("Users", null, "id = " + id, null, null, null, null);
+
+        if (cursor != null){
+            user = new User();
+            cursor.moveToFirst();
+        }
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String username = cursor.getString(cursor.getColumnIndexOrThrow("username"));
+                String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
+                int role = cursor.getInt(cursor.getColumnIndexOrThrow("role"));
+
+                user = new User(username, password, role);
+
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return user;
+    }
+
+    public long addUser(User user) {
         ContentValues values = new ContentValues();
 
         values.put("username", user.getUsername());
         values.put("password", user.getPassword());
         values.put("role", user.getRole());
 
-        database.insert("Users", null, values);
+        return database.insert("Users", null, values);
     }
 
-    public void updateClient(User user) {
+    public void updateUser(User user) {
         ContentValues values = new ContentValues();
 
         values.put("username", user.getUsername());
@@ -89,9 +114,9 @@ public class UserPersistence {
         database.update("Users", values, "id = ?", whereArgs);
     }
     
-    public void deleteClient(User user) {
-        String[] whereArgs = {String.valueOf(user.getId())};
-        database.delete("Users", "id = ?", whereArgs);
+    public int deleteUser(int id) {
+        String[] whereArgs = {String.valueOf(id)};
+        return database.delete("Users", "id = ?", whereArgs);
     }
 
     public void createUserTable() {
@@ -102,6 +127,10 @@ public class UserPersistence {
                 "role INTEGER DEFAULT 0);"
                 ;
         database.execSQL(query);
+    }
+
+    public void deleteTable(){
+        database.execSQL("DROP TABLE IF EXISTS Users");
     }
 
     public void insertDummyValues(){
