@@ -27,7 +27,6 @@ public class PropertyCardAdapter extends RecyclerView.Adapter<PropertyCardAdapte
     private final Context context;
     private ArrayList<Property> propertiesList;
     private PresenterEmployee presenter;
-
     private int role;
 
     public PropertyCardAdapter(Context context) {

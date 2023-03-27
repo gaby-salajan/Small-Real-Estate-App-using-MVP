@@ -77,6 +77,6 @@ public class EditUserActivity extends AppCompatActivity implements IViewEditUser
 
     @Override
     public void setUserId(int id) {
-        this.userId.setText(id);
+        this.userId.setText(String.valueOf(id));
     }
 }

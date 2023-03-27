@@ -13,22 +13,24 @@ import com.gabys.ps_tema1.R;
 import com.gabys.ps_tema1.View.Adapters.UserCardAdapter;
 
 public class UserFragment extends Fragment {
-
+    View view;
     UserCardAdapter userCardAdapter;
+
     public UserFragment(UserCardAdapter user) {
         this.userCardAdapter = user;
     }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recycler_user, container, false);
 
+    private void initComponents(){
         RecyclerView usersRV = view.findViewById(R.id.user_RecyclerView);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
         usersRV.setLayoutManager(linearLayoutManager);
-
         usersRV.setAdapter(userCardAdapter);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.recycler_user, container, false);
+        initComponents();
         return view;
     }
 }

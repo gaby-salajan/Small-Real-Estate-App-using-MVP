@@ -40,10 +40,6 @@ public class PresenterEmployee extends PresenterClient{
         this.iViewEmployee.setUserRole(user.getRole());
     }
 
-    public PresenterEmployee(Context context){
-        super(context);
-    }
-
     public void onFilterButtonClick(Context context, LayoutInflater inflater){
 
         View dialogView = inflater.inflate(R.layout.dialog_filter_properties, null);

@@ -47,7 +47,6 @@ public class TestConnection {
 
     @Test
     public void TestCloseConnection() {
-
         // db
         db = databaseHelper.getWritableDatabase();
         db.close();

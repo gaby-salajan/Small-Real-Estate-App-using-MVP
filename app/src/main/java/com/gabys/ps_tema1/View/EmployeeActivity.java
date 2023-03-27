@@ -67,21 +67,6 @@ public class EmployeeActivity extends AppCompatActivity implements IViewEmployee
     }
 
     @Override
-    public void addProperty() {
-
-    }
-
-    @Override
-    public void updateProperty() {
-
-    }
-
-    @Override
-    public void deleteProperty() {
-
-    }
-
-    @Override
     public void setUserRole(int userRole) {
         this.propertyCardAdapter.setUserRole(userRole);
     }
